@@ -31,6 +31,12 @@ const userSchema = new Schema({
       ref: "Task",
     },
   ],
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
 });
 
 userSchema.index({ username: 1 });

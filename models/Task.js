@@ -2,7 +2,7 @@ import { Schema, model, now } from "mongoose";
 const taskSchema = new Schema({
   created: {
     type: Date,
-    default: Date.now,
+    default: now,
   },
   title: {
     type: String,
@@ -28,7 +28,7 @@ const taskSchema = new Schema({
   },
   lastModified: {
     type: Date,
-    default: Date.now,
+    default: now,
   },
   severity: {
     type: String,
@@ -37,6 +37,6 @@ const taskSchema = new Schema({
   },
 });
 
-gradeSchema.index({ createdBy: 1, assignedTo: 1 });
+taskSchema.index({ createdBy: 1, assignedTo: 1 });
 
 export default model("Task", taskSchema);

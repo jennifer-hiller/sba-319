@@ -147,6 +147,7 @@ try {
       content: "Finish the final report for the project.",
       createdBy: createdUsers[0]._id,
       assignedTo: createdUsers[1]._id,
+      severity: "High",
     },
     {
       title: "Design New Logo",
@@ -155,6 +156,7 @@ try {
       content: "Create a new logo for the marketing campaign.",
       createdBy: createdUsers[1]._id,
       assignedTo: createdUsers[2]._id,
+      severity: "Moderate",
     },
     {
       title: "Update Website",
@@ -163,6 +165,7 @@ try {
       content: "Implement the new design on the company website.",
       createdBy: createdUsers[2]._id,
       assignedTo: createdUsers[3]._id,
+      severity: "Showstopper",
     },
     {
       title: "Prepare Presentation",
@@ -171,6 +174,7 @@ try {
       content: "Prepare slides for the upcoming conference.",
       createdBy: createdUsers[3]._id,
       assignedTo: createdUsers[4]._id,
+      severity: "Low",
     },
     {
       title: "Conduct Market Research",
@@ -179,6 +183,7 @@ try {
       content: "Research the latest trends in the industry.",
       createdBy: createdUsers[4]._id,
       assignedTo: createdUsers[5]._id,
+      severity: "Moderate",
     },
     {
       title: "Organize Team Meeting",
@@ -187,6 +192,7 @@ try {
       content: "Schedule and organize the monthly team meeting.",
       createdBy: createdUsers[5]._id,
       assignedTo: createdUsers[6]._id,
+      severity: "High",
     },
     {
       title: "Write Blog Post",
@@ -195,6 +201,7 @@ try {
       content: "Draft a blog post about our new product launch.",
       createdBy: createdUsers[6]._id,
       assignedTo: createdUsers[7]._id,
+      severity: "Low",
     },
     {
       title: "Analyze Sales Data",
@@ -203,6 +210,7 @@ try {
       content: "Analyze the sales data from the last quarter.",
       createdBy: createdUsers[7]._id,
       assignedTo: createdUsers[8]._id,
+      severity: "Moderate",
     },
     {
       title: "Develop Mobile App",
@@ -211,6 +219,7 @@ try {
       content: "Start development on the new mobile application.",
       createdBy: createdUsers[8]._id,
       assignedTo: createdUsers[9]._id,
+      severity: "High",
     },
     {
       title: "Customer Feedback Survey",
@@ -219,6 +228,7 @@ try {
       content: "Create a survey to gather customer feedback.",
       createdBy: createdUsers[9]._id,
       assignedTo: createdUsers[10]._id,
+      severity: "Showstopper",
     },
     {
       title: "Plan Marketing Strategy",
@@ -227,6 +237,7 @@ try {
       content: "Develop a marketing strategy for the next quarter.",
       createdBy: createdUsers[10]._id,
       assignedTo: createdUsers[11]._id,
+      severity: "Low",
     },
     {
       title: "Test Software Features",
@@ -235,6 +246,7 @@ try {
       content: "Test the new features in the software update.",
       createdBy: createdUsers[11]._id,
       assignedTo: createdUsers[12]._id,
+      severity: "Moderate",
     },
     {
       title: "Create Training Materials",
@@ -243,6 +255,7 @@ try {
       content: "Develop training materials for new employees.",
       createdBy: createdUsers[12]._id,
       assignedTo: createdUsers[13]._id,
+      severity: "High",
     },
     {
       title: "Review Financial Reports",
@@ -251,6 +264,7 @@ try {
       content: "Review the financial reports for accuracy.",
       createdBy: createdUsers[13]._id,
       assignedTo: createdUsers[14]._id,
+      severity: "Showstopper",
     },
     {
       title: "Set Up New Workstations",
@@ -259,6 +273,7 @@ try {
       content: "Set up new computers and workstations for the office.",
       createdBy: createdUsers[14]._id,
       assignedTo: createdUsers[15]._id,
+      severity: "Low",
     },
     {
       title: "Coordinate Event Planning",
@@ -267,6 +282,7 @@ try {
       content: "Coordinate the planning of the annual company event.",
       createdBy: createdUsers[15]._id,
       assignedTo: createdUsers[16]._id,
+      severity: "Moderate",
     },
     {
       title: "Update Social Media",
@@ -275,6 +291,7 @@ try {
       content: "Post updates on the company's social media accounts.",
       createdBy: createdUsers[16]._id,
       assignedTo: createdUsers[17]._id,
+      severity: "High",
     },
     {
       title: "Draft Legal Documents",
@@ -283,6 +300,7 @@ try {
       content: "Draft the necessary legal documents for the merger.",
       createdBy: createdUsers[17]._id,
       assignedTo: createdUsers[18]._id,
+      severity: "Showstopper",
     },
     {
       title: "Optimize SEO",
@@ -291,6 +309,7 @@ try {
       content: "Optimize the website for better search engine rankings.",
       createdBy: createdUsers[18]._id,
       assignedTo: createdUsers[19]._id,
+      severity: "Low",
     },
     {
       title: "Conduct Employee Survey",
@@ -299,10 +318,11 @@ try {
       content: "Conduct a survey to gather employee feedback.",
       createdBy: createdUsers[19]._id,
       assignedTo: createdUsers[0]._id,
+      severity: "Moderate",
     },
   ];
 
-  const createdTasks = await Post.create(tasks);
+  const createdTasks = await Task.create(tasks);
 
   console.log("Tasks: ", createdTasks);
 
@@ -433,10 +453,13 @@ try {
   await Comment.deleteMany({});
   const createdComments = await Comment.create(comments);
 
-  // Update each user's "comments" properties
-  for (const task of createdComments) {
-    await User.findByIdAndUpdate(task.comments, {
-      $push: { created: task._id },
+  // Update each user and task "comments" properties
+  for (const comment of createdComments) {
+    await User.findByIdAndUpdate(comment.author, {
+      $push: { comments: comment._id },
+    });
+    await Task.findByIdAndUpdate(comment.task, {
+      $push: { comments: comment._id },
     });
   }
 } catch (err) {
