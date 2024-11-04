@@ -17,9 +17,11 @@ app.use(express.json());
 
 import userRoutes from "./routes/user.js";
 import taskRoutes from "./routes/task.js";
+import commentRoutes from "./routes/comment.js";
 
 app.use("/api/user", userRoutes);
 app.use("/api/task", taskRoutes);
+app.use("/api/comment", commentRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}/`);

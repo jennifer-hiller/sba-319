@@ -3,7 +3,6 @@ const taskSchema = new Schema({
   created: {
     type: Date,
     default: Date.now,
-    required: true,
   },
   title: {
     type: String,
@@ -30,7 +29,6 @@ const taskSchema = new Schema({
   lastModified: {
     type: Date,
     default: Date.now,
-    required: true,
   },
   severity: {
     type: String,
