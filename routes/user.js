@@ -12,15 +12,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    res.status(200).json(user);
-  } catch (e) {
-    res.send(e).status(400);
-  }
-});
-
 // Create User
 router.post("/", async (req, res) => {
   try {
@@ -68,6 +59,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // delete user - will fail if the user has tasks assigned
+// In fact, never use this. I will make a "disabled" field in the future which means the user will always exist in the database once created.
 router.delete("/:id", async (req, res) => {
   try {
     // find any tasks assigned to the user

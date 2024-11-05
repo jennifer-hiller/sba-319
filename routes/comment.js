@@ -2,7 +2,6 @@ import express from "express";
 import Comment from "../models/Comment.js";
 import User from "../models/User.js";
 import Task from "../models/Task.js";
-import * as mongoose from "mongoose";
 
 const router = express.Router();
 
