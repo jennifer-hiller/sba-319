@@ -87,3 +87,5 @@ router.delete("/:id", async (req, res) => {
   await commenter.save();
   res.json(deletedComment);
 });
+
+export default router;

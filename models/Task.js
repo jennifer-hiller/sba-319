@@ -35,8 +35,15 @@ const taskSchema = new Schema({
     enum: ["Low", "Moderate", "High", "Showstopper"],
     required: true,
   },
+  status: {
+    type: String,
+    enum: ["To Do", "In Progress", "Completed"],
+    default: "To Do",
+    required: true,
+  },
 });
 
 taskSchema.index({ createdBy: 1, assignedTo: 1 });
+taskSchema.index({ status: 1 });
 
 export default model("Task", taskSchema);

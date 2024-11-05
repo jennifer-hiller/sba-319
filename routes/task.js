@@ -1,5 +1,6 @@
 import express from "express";
 import Task from "../models/Task.js";
+import User from "../models/User.js";
 
 const router = express.Router();
 
@@ -21,8 +22,10 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const assigner = await User.findById(req.body.createdBy);
+    console.log("assigner", assigner);
     if (!assigner) return res.status(404).send("Assigner not found");
     const assignee = await User.findById(req.body.assignedTo);
+    console.log("assignee", assignee);
     if (!assignee) return res.status(404).send("Assignee not found");
     const task = new Task(req.body);
     assigner.created.push(task._id);
@@ -40,8 +43,8 @@ router.get("/:id", async (req, res) => {
   try {
     const task = await Task.findById(req.params.id)
       .populate("comments")
-      .populate("assignedTo", "username")
-      .populate("createdBy", "username");
+      .populate("assignedTo", "name")
+      .populate("createdBy", "name");
 
     if (!task) return res.status(404).send("Task not found");
     res.status(200).json(task);
