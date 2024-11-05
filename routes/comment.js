@@ -10,15 +10,15 @@ router.get("/", async (req, res) => {
   try {
     let comments;
     if (req.query.userId) {
-      if (!(await User.findById(req.query.userId))) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      comments = await Comment.find({ userId: req.query.userId });
+      const user = await User.findById(req.query.userId);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      comments = await Comment.find({ author: req.query.userId });
     } else if (req.query.taskId) {
       if (!(await Task.findById(req.query.taskId))) {
         return res.status(404).json({ message: "Task not found" });
       }
-      comments = await Comment.find({ taskId: req.query.taskId });
+      comments = await Comment.find({ task: req.query.taskId });
+      console.log(comments.length);
     } else {
       comments = await Comment.find();
     }
@@ -51,14 +51,23 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const comment = await Comment.findById(id);
+    res.status(200).json(comment);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+});
+
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const comment = req.body;
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send(`No comment with id: ${id}`);
   const updatedComment = await Comment.findByIdAndUpdate(id, comment, {
     new: true,
   });
+  if (!updatedComment) return res.status(404).send("Comment not found");
   // in the unlikely event that the author changed....
   const commenter = await User.findById(comment.author);
   if (!commenter) {
@@ -76,14 +85,13 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send(`No comment with id: ${id}`);
-  const deletedComment = await Comment.findByIdAndDelete(id, comment);
-  const commenter = await User.findById(comment.author);
+  const deletedComment = await Comment.findByIdAndDelete(id);
+  if (!deletedComment) return res.status(404).send("Comment not found");
+  const commenter = await User.findById(deletedComment.author);
   if (!commenter) {
     return res.status(404).json({ message: "Commenter not found" });
   }
-  commenter.comments.pull(updatedComment._id);
+  commenter.comments.pull(deletedComment._id);
   await commenter.save();
   res.json(deletedComment);
 });

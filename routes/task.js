@@ -22,10 +22,8 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const assigner = await User.findById(req.body.createdBy);
-    console.log("assigner", assigner);
     if (!assigner) return res.status(404).send("Assigner not found");
     const assignee = await User.findById(req.body.assignedTo);
-    console.log("assignee", assignee);
     if (!assignee) return res.status(404).send("Assignee not found");
     const task = new Task(req.body);
     assigner.created.push(task._id);
@@ -55,10 +53,12 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const { created, ...updateData } = req.body;
+    // Complicated way of finding the task and updating it without overwriting the "created" date
+    const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).send("Task not found");
+    Object.assign(task, updateData, { lastModified: new Date() });
+    await task.save();
     const assigner = await User.findById(task.createdBy);
     if (!assigner) return res.status(404).send("Assigner not found");
     const assignee = await User.findById(task.assignedTo);
