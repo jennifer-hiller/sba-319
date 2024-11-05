@@ -1,4 +1,4 @@
-# User API Documentation
+# JIRA-Clone API Documentation
 
 This document provides an overview of the API endpoints available for managing users, tasks, and comments.
 
